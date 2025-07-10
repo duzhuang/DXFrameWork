@@ -1,3 +1,4 @@
+import ResLoad from "../Core/ResLoad/ResLoad";
 import ResManager from "../Core/Utils/ResManager";
 
 const { ccclass, property } = cc._decorator;
@@ -11,15 +12,27 @@ export default class Main extends cc.Component {
         this.m_resManager = new ResManager();
     }
 
-    onClickLoadSpr() {
-        this.m_resManager.loadRes("Sprites/spr_2", cc.SpriteFrame, true, (err, asset) => {
+    onClickLoadSpr() {       
+        ResLoad.instance.loadRes("Sprites/spr_2", cc.SpriteFrame, (err, asset) => {
             if (err) {
-                console.error("ResManager loadRes error:", err);
+                console.error("ResLoad loadRes error:", err);
                 return;
             }
             const node = new cc.Node();
             node.addComponent(cc.Sprite).spriteFrame = asset;
             node.parent = this.node;
+            node.setPosition(0, 200);
+        })
+
+        ResLoad.instance.loadRes("Sprites/spr_2", cc.SpriteFrame, (err, asset) => {
+            if (err) {
+                console.error("ResLoad loadRes error:", err);
+                return;
+            }
+            const node = new cc.Node();
+            node.addComponent(cc.Sprite).spriteFrame = asset;
+            node.parent = this.node;
+            node.setPosition(0, 400);
         })
     }
 
@@ -30,11 +43,20 @@ export default class Main extends cc.Component {
 
     private async laodSprAsync() {
         try {
-            const sprFrame = await this.m_resManager.loadResAsync<cc.SpriteFrame>("Sprites/spr_3", cc.SpriteFrame, true);
+            const promise1 =  this.m_resManager.loadResAsync<cc.SpriteFrame>("Sprites/spr_3", cc.SpriteFrame, true);
+            const promise2 =  this.m_resManager.loadResAsync<cc.SpriteFrame>("Sprites/spr_3", cc.SpriteFrame, true);
+
+            const [sprFrame1,sprFrame2] = await Promise.all([promise1, promise2]);
+
             const node = new cc.Node();
-            node.addComponent(cc.Sprite).spriteFrame = sprFrame;
+            node.addComponent(cc.Sprite).spriteFrame = sprFrame1;
             node.parent = this.node;
             node.setPosition(0, -400);
+
+            const node2 = new cc.Node();
+            node2.addComponent(cc.Sprite).spriteFrame = sprFrame2;
+            node2.parent = this.node;
+            node2.setPosition(0, -200);
         } catch (err) {
             console.error("ResManager loadResAsync error:", err);
         }
