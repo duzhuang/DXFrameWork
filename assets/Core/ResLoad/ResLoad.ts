@@ -36,7 +36,7 @@ export default class ResLoad {
         }
 
         //检查是否正在加载
-        if (this.m_loadingQueue.has(path)) {            
+        if (this.m_loadingQueue.has(path)) {                
             //添加到现有的加载队列
             this.m_loadingQueue.get(path)!.then((asset) => {
                 callback?.(null, asset);
@@ -87,7 +87,7 @@ export default class ResLoad {
         }
 
         //检查是否正在加载
-        if (this.m_loadingQueue.has(path)) {            
+        if (this.m_loadingQueue.has(path)) {             
             return this.m_loadingQueue.get(path)! as Promise<T>;
         }
 
