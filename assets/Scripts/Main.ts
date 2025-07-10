@@ -1,4 +1,5 @@
 import ResLoad from "../Core/ResLoad/ResLoad";
+import FrameLoading from "../Core/Utils/FrameLoading";
 import ResManager from "../Core/Utils/ResManager";
 
 const { ccclass, property } = cc._decorator;
@@ -6,14 +7,24 @@ const { ccclass, property } = cc._decorator;
 @ccclass
 export default class Main extends cc.Component {
 
+    @property({ type: cc.Prefab, tooltip: '' })
+    prefabRect: cc.Prefab = null;
+
+    @property({ type: cc.Node, tooltip: '' })
+    nodeContent: cc.Node = null;
+
     private m_resManager: ResManager = null;
+
+    private m_frameLoading: FrameLoading = null;
 
     protected onLoad(): void {
         this.m_resManager = new ResManager();
+        this.m_frameLoading = new FrameLoading();
     }
 
-    onClickLoadSpr() {    
-        
+
+    onClickLoadSpr() {
+
         this.m_resManager.loadRes("Sprites/spr_2", cc.SpriteFrame, true, (err, asset) => {
             if (err) {
                 console.error("ResManager loadRes error:", err);
@@ -35,7 +46,7 @@ export default class Main extends cc.Component {
             node.parent = this.node;
             node.setPosition(0, 400);
         })
-        
+
         // ResLoad.instance.loadRes("Sprites/spr_2", cc.SpriteFrame, (err, asset) => {
         //     if (err) {
         //         console.error("ResLoad loadRes error:", err);
@@ -99,14 +110,9 @@ export default class Main extends cc.Component {
     }
 
     onClickLoadPrefab() {
-        this.m_resManager.loadRes("Prefabs/prefabRect", cc.Prefab, true, (err, asset) => {
-            if (err) {
-                console.error("ResManager loadRes error:", err);
-                return;
-            }
-            const node = cc.instantiate(asset);
-            node.parent = this.node;
-            node.setPosition(0, 300);
+        this.m_frameLoading.addTask(this.prefabRect, 100, (node: cc.Node, index: number) => {
+            node.parent = this.nodeContent;
+            node.getComponentInChildren(cc.Label).string = index + "";
         })
     }
 }

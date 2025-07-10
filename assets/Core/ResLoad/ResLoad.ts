@@ -94,7 +94,7 @@ export default class ResLoad {
         //创建新的加载任务
         const loadTask = new Promise<T>(async (resolve, reject) => {
             try {
-                const asset = await this._loadInternal<T>(path, type);
+                const asset = await this.loadInternal<T>(path, type);
                 resolve(asset);
             } catch (err) {
                 reject(err);
@@ -115,7 +115,7 @@ export default class ResLoad {
      * @param type 资源类型
      * @returns
      */
-    private _loadInternal<T extends cc.Asset>(
+    private loadInternal<T extends cc.Asset>(
         path: string,
         type: typeof cc.Asset,
     ) {
