@@ -1,5 +1,7 @@
+import Log from "../Core/Log/Log";
 import ResLoad from "../Core/ResLoad/ResLoad";
 import FrameLoading from "../Core/Utils/FrameLoadingTool";
+import ObjectPoolTool from "../Core/Utils/ObjectPoolTool";
 import ResManager from "../Core/Utils/ResManagerTool";
 
 const { ccclass, property } = cc._decorator;
@@ -17,9 +19,20 @@ export default class Main extends cc.Component {
 
     private m_frameLoading: FrameLoading = null;
 
+    private m_objectPoolTool: ObjectPoolTool = null;
+
     protected onLoad(): void {
         this.m_resManager = new ResManager();
         this.m_frameLoading = new FrameLoading();
+        this.m_objectPoolTool = new ObjectPoolTool();
+
+        this.m_objectPoolTool.setMaxPoolSize(10);
+
+        this.m_objectPoolTool.prewarm(this.prefabRect, 10);
+    }
+
+    protected start(): void {
+       
     }
 
 
@@ -109,10 +122,42 @@ export default class Main extends cc.Component {
         node2.setPosition(0, -200);
     }
 
+    private m_isClear = false;
+
     onClickLoadPrefab() {
-        this.m_frameLoading.addTask(this.prefabRect, 100, (node: cc.Node, index: number) => {
-            node.parent = this.nodeContent;
-            node.getComponentInChildren(cc.Label).string = index + "";
-        })
+        // this.m_frameLoading.addTask(this.prefabRect, 100, (node: cc.Node, index: number) => {
+        //     node.parent = this.nodeContent;
+        //     node.getComponentInChildren(cc.Label).string = index + "";
+        // })
+
+        // if (this.m_isClear) {
+        //     const children = this.nodeContent.children;                      
+
+        //     for (let idx = children.length-1; idx >= 0; idx--) {
+        //         const element = children[idx];
+        //         this.m_objectPoolTool.recycleNode(element, this.prefabRect);
+        //     }
+
+        // } else {
+        //     for (let idx = 0; idx < 20; idx++) {
+        //         const node = this.m_objectPoolTool.getNode(this.prefabRect);
+        //         node.parent = this.nodeContent;
+        //         node.getComponentInChildren(cc.Label).string = idx + "";
+        //     }
+        // }
+
+        // this.m_isClear = !this.m_isClear;
+
+
+
+         Log.log("Main start","NET","网络日志");
+        Log.log("Main start","MODEL","数据日志");
+        Log.log("Main start","VIEW","视图日志");     
+        Log.log("Main start","ERROR","错误日志");
+        Log.log("Main start","WARNING","警告日志");                
+        Log.log("Main start","TRACE","跟踪日志");
+        Log.log("Main start","BUSINESS","业务日志");        
+        Log.log("Main start","CONFIG","配置日志");
+        
     }
 }
