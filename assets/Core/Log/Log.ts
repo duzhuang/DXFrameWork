@@ -44,17 +44,14 @@ export default class Log {
     ]);
 
     public static log(msg: any, type: keyof typeof Log.LOG_CONFIG = "TRACE", description?: string) {
-        try {
-            // 生产环境过滤低级别日志
-            if (Log.LOG_LEVEL === 'PROD') {
-                const weight = Log.LEVEL_WEIGHTS[type] || 0;
-                if (weight < 2) return;
+        if(CC_DEBUG || CC_PREVIEW || CC_EDITOR) {
+            try {
+                const style = this.STYLE_MAP.get(type) || '';
+                this.print(type, style, msg, description);
+            } catch (err) {
+                console.error("Log log error:", err);
             }
-            const style = this.STYLE_MAP.get(type) || '';
-            this.print(type, style, msg, description);
-        } catch (err) {
-            console.error("Log log error:", err);
-        }
+        }      
     }
 
 
