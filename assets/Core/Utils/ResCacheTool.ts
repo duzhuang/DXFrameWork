@@ -1,7 +1,7 @@
 /**
  * 资源缓存
  */
-export default class ResCache {
+export default class ResCacheTool {
 
     private m_cacheMap: Map<string, cc.Asset> = new Map<string, cc.Asset>();
 
@@ -12,7 +12,7 @@ export default class ResCache {
      */
     public setCacheRes(path: string, asset: cc.Asset): void {
         if (!path || !asset) {
-            console.error("ResCache cacheRes function path or asset is null");
+            console.error("ResCacheTool cacheRes function path or asset is null");
             return;
         }
         
@@ -26,7 +26,7 @@ export default class ResCache {
      */
     public getCacheRes(path: string): cc.Asset | undefined {
         if (!path) {
-            console.error("ResCache getCacheRes function path is null");
+            console.error("ResCacheTool getCacheRes function path is null");
             return;
         }
         return this.m_cacheMap.get(path);
@@ -39,7 +39,7 @@ export default class ResCache {
      */
     public removeCacheRes(path: string): boolean {
         if (!path) {
-            console.error("ResCache: path is null");
+            console.error("ResCacheTool: path is null");
             return false;
         }
 

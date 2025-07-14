@@ -1,7 +1,7 @@
 import ResLoad from "../ResLoad/ResLoad";
-import ResCache from "./ResCache";
+import ResCache from "./ResCacheTool";
 
-export default class ResManager {
+export default class ResManagerTool {
     private m_resLoader: ResLoad = ResLoad.instance;
     private m_resCache: ResCache = new ResCache();
 
@@ -34,7 +34,7 @@ export default class ResManager {
 
         this.m_resLoader.loadRes(path, type, (err, asset) => {
             if (err) {
-                console.error("ResManager loadRes error:", err);
+                console.error("ResManagerTool loadRes error:", err);
                 callback(err, null);
                 return;
             }

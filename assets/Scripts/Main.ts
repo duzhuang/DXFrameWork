@@ -1,6 +1,6 @@
 import ResLoad from "../Core/ResLoad/ResLoad";
-import FrameLoading from "../Core/Utils/FrameLoading";
-import ResManager from "../Core/Utils/ResManager";
+import FrameLoading from "../Core/Utils/FrameLoadingTool";
+import ResManager from "../Core/Utils/ResManagerTool";
 
 const { ccclass, property } = cc._decorator;
 

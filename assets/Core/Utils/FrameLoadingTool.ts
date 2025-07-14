@@ -1,7 +1,7 @@
 /**
  * 分帧实例化管理器
  */
-export default class FrameLoading {
+export default class FrameLoadingTool {
     /**队列 */
     private m_loadingQueue: {
         source: cc.Prefab | cc.Node,

@@ -1,5 +1,5 @@
 import ResLoad from "../Core/ResLoad/ResLoad";
-import ResCache from "../Core/Utils/ResCache";
+import ResCache from "../Core/Utils/ResCacheTool";
 
 export default class SpriteCache {
 
