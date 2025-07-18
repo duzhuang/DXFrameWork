@@ -1,5 +1,7 @@
 import Log from "../Core/Log/Log";
 import ResLoad from "../Core/ResLoad/ResLoad";
+import { UILayer } from "../Core/UI/UILayer";
+import UIManager from "../Core/UI/UIManager";
 import FrameLoading from "../Core/Utils/FrameLoadingTool";
 import ObjectPoolTool from "../Core/Utils/ObjectPoolTool";
 import ResManager from "../Core/Utils/ResManagerTool";
@@ -32,7 +34,7 @@ export default class Main extends cc.Component {
     }
 
     protected start(): void {
-       
+
     }
 
 
@@ -125,39 +127,10 @@ export default class Main extends cc.Component {
     private m_isClear = false;
 
     onClickLoadPrefab() {
-        // this.m_frameLoading.addTask(this.prefabRect, 100, (node: cc.Node, index: number) => {
-        //     node.parent = this.nodeContent;
-        //     node.getComponentInChildren(cc.Label).string = index + "";
-        // })
+        UIManager.instance.openUI({ uiName: "prefabUI1", prefabPath: "Prefabs/prefabUI1", layer: UILayer.NORMAL });
+    }
 
-        // if (this.m_isClear) {
-        //     const children = this.nodeContent.children;                      
-
-        //     for (let idx = children.length-1; idx >= 0; idx--) {
-        //         const element = children[idx];
-        //         this.m_objectPoolTool.recycleNode(element, this.prefabRect);
-        //     }
-
-        // } else {
-        //     for (let idx = 0; idx < 20; idx++) {
-        //         const node = this.m_objectPoolTool.getNode(this.prefabRect);
-        //         node.parent = this.nodeContent;
-        //         node.getComponentInChildren(cc.Label).string = idx + "";
-        //     }
-        // }
-
-        // this.m_isClear = !this.m_isClear;
-
-
-
-         Log.log("Main start","NET","网络日志");
-        Log.log("Main start","MODEL","数据日志");
-        Log.log("Main start","VIEW","视图日志");     
-        Log.log("Main start","ERROR","错误日志");
-        Log.log("Main start","WARNING","警告日志");                
-        Log.log("Main start","TRACE","跟踪日志");
-        Log.log("Main start","BUSINESS","业务日志");        
-        Log.log("Main start","CONFIG","配置日志");
-        
+    onClickClosePrefab() {
+        UIManager.instance.closeUI("prefabUI1");
     }
 }
