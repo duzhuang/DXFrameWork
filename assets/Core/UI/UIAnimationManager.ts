@@ -70,9 +70,9 @@ export default class UIAnimationManager {
         });
 
         this.registerAnimation('slide-right', {
-            show: function (node: cc.Node, duration: number = 0.4) {
+            show: function (node: cc.Node, duration: number = 0.4) {                
                 const startPos = new cc.Vec3(1000, 0, 0);
-                node.position = startPos;
+                node.setPosition(startPos);            
                 return cc.tween(node)
                     .to(duration, { position: cc.Vec3.ZERO }, { easing: 'cubicOut' })
             },

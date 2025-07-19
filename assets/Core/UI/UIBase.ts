@@ -5,9 +5,9 @@ const { ccclass, property } = cc._decorator;
 
 @ccclass
 export abstract class UIBase extends cc.Component {
-    
+
     /**UI 唯一标识（与UIConig 的 key 一致） */
-    abstract uiName: string;       
+    abstract uiName: string;
 
     /**
      * 初始化方法（数据传递入口）
@@ -20,24 +20,14 @@ export abstract class UIBase extends cc.Component {
     /**
      * 打开动画完成回调
      */
-    async onShow(): Promise<void> {
-        const animationComponent = this.node.getComponent(UIAnimationComponent);
-        if (animationComponent) {
-            await animationComponent.playShowAnimation();
-        }
-        /**子类重写显示逻辑 */
+    onShow(): void {
     }
 
     /**
      * 关闭动画完成回调
      */
-    async onHide(): Promise<void> {
-        const animationComponent = this.node.getComponent(UIAnimationComponent);
-        if (animationComponent) {
-            await animationComponent.playHideAnimation();
-        }
+    onHide(): void {
 
-        /**子类重写隐藏逻辑 */
     }
 
     /**

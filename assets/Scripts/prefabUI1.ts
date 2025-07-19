@@ -11,6 +11,13 @@ export default class prefabUI1 extends UIBase {
         console.log("prefabUI1 init");
     }
 
+    onShow(): void {
+        console.log("prefabUI1 onShow");
+    }
+
+    onHide(): void {
+        console.log("prefabUI1 onHide");
+    }
 
     onClickClose(): void {
         this.close();

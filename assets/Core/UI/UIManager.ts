@@ -17,6 +17,8 @@ export default class UIManager {
     private nodePools: Map<string, cc.NodePool> = new Map();
     /**UI配置 */
     private uiConfigs: Map<string, UIConfig> = new Map();
+    /**关闭状态标记*/
+    private closingSet: Set<string> = new Set();
 
     public static get instance(): UIManager {
         if (!UIManager.m_instance) {
@@ -82,17 +84,17 @@ export default class UIManager {
         if (uiBase) {
             uiBase.init(data);
         }
-
-        uiNode.active = true;
+        
         this.activeViews.set(uiName, uiNode);
 
         //动画组件
         const animationComponent = uiNode.getComponent(UIAnimationComponent);
-        if (animationComponent) {
+        if (animationComponent && animationComponent.enabled) {
             await animationComponent.playShowAnimation();
-        } else {
-            uiBase.onShow();
-        }
+          
+        } 
+        
+        uiBase.onShow();
 
         return uiNode;
     }
@@ -108,26 +110,43 @@ export default class UIManager {
     }
 
     public closeUI(uiName: string) {
+        // 标记为关闭状态
+        if (this.closingSet.has(uiName)) {
+            return;
+        }
+
         const uiNode = this.activeViews.get(uiName);
         if (!uiNode) {
             return;
         }
+
+        // 标记为关闭中
+        this.closingSet.add(uiName);
+
         const uiBase = uiNode.getComponent(UIBase);
 
         if (!uiBase) {
             uiNode.destroy();
             this.activeViews.delete(uiName);
+            this.closingSet.delete(uiName); // 清除标记
             return;
         }
 
         //动画组件
         const animationComponent = uiNode.getComponent(UIAnimationComponent);
-        if (animationComponent) {
-            animationComponent.playHideAnimation().then(() => {
-                this.removeUI(uiName);
-            })
+        if (animationComponent && animationComponent.enabled) {
+            animationComponent.playHideAnimation()
+                .then(() => {
+                    uiBase.onHide();
+                    this.removeUI(uiName);
+                })
+                .finally(() => {
+                    this.closingSet.delete(uiName); // 清除标记
+                })
         } else {
+            uiBase.onHide();
             this.removeUI(uiName);
+            this.closingSet.delete(uiName); // 清除标记
         }
     }
 
@@ -135,6 +154,11 @@ export default class UIManager {
         //配置
         const uiConfig = this.uiConfigs.get(uiName);
         const uiNode = this.activeViews.get(uiName);
+
+        if (!uiNode) {
+            return;
+        }
+
         uiNode.active = false;
 
         if (!uiConfig?.cache) {
