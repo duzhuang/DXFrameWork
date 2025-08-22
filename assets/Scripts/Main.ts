@@ -10,6 +10,7 @@ const { ccclass, property } = cc._decorator;
 
 @ccclass
 export default class Main extends cc.Component {
+    
 
     @property({ type: cc.Prefab, tooltip: '' })
     prefabRect: cc.Prefab = null;
@@ -34,7 +35,7 @@ export default class Main extends cc.Component {
     }
 
     protected start(): void {
-
+        
     }
 
 
