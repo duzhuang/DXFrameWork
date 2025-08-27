@@ -17,11 +17,14 @@ export default class UIAnimationComponent extends cc.Component {
     @property({ type: cc.Float, tooltip: '隐藏动画时长（秒）' })
     hideDuration: number = 0.3;
 
+    @property({ type: cc.Node, tooltip: '动画节点' })
+    animationNode: cc.Node = null;
+
     /**当前执行的动画 */
     private m_currentTween: cc.Tween<Node> | null = null;
 
     protected start(): void {
-        
+
     }
 
     /**
@@ -37,14 +40,14 @@ export default class UIAnimationComponent extends cc.Component {
 
             const animation = UIAnimationManager.instance.getAnimation(component.showAnimation);
 
-            component.m_currentTween = animation.show(component.node, component.showDuration);
+            component.m_currentTween = animation.show(component.node, component.animationNode, component.showDuration);
 
             if (component.m_currentTween) {
                 component.m_currentTween.call(() => {
                     component.m_currentTween = null;
                     resolve();
                 })
-                .start();
+                    .start();
             } else {
                 resolve();
             }
@@ -62,7 +65,7 @@ export default class UIAnimationComponent extends cc.Component {
                 component.m_currentTween.stop();
             }
             const animation = UIAnimationManager.instance.getAnimation(component.hideAnimation);
-            component.m_currentTween = animation.hide(component.node, component.hideDuration);
+            component.m_currentTween = animation.hide(component.node, component.animationNode, component.hideDuration);
 
             if (component.m_currentTween) {
                 component.m_currentTween.call(() => {

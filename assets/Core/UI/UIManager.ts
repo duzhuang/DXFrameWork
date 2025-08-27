@@ -29,21 +29,19 @@ export default class UIManager {
 
     constructor() {
         this.uiRoot = new cc.Node('UIRoot');
-        const widgetCom = this.uiRoot.addComponent(cc.Widget);
-        widgetCom.isAlignTop = true;
-        widgetCom.isAlignBottom = true;
-        widgetCom.isAlignLeft = true;
-        widgetCom.isAlignRight = true;
-        widgetCom.top = 0;
-        widgetCom.bottom = 0;
-        widgetCom.left = 0;
-        widgetCom.right = 0;
-        cc.director.getScene()!.addChild(this.uiRoot);
+        this.uiRoot.name = 'UIRoot';
+        
+        this.uiRoot.setContentSize(cc.winSize);
+        this.uiRoot.setPosition(cc.Vec2.ZERO);    
+        const canvas = cc.director.getScene()!.getChildByName('Canvas');
+        canvas.addChild(this.uiRoot);
 
         //创建层级容器
         Object.values(UILayer).forEach(layer => {
             if (typeof layer === 'number') {
                 const layerNode = new cc.Node(`Layer_${layer}`);
+                layerNode.setContentSize(cc.winSize);
+                layerNode.setPosition(cc.Vec2.ZERO);
                 this.uiRoot.addChild(layerNode);
                 this.layers.set(layer, layerNode);
             }
@@ -74,9 +72,12 @@ export default class UIManager {
             uiNode = await this.createUINode(uiConfig.prefabPath);
         }
 
+        //设置位置
+        uiNode.setPosition(cc.Vec2.ZERO);
+
         //挂载到层级容器
         const layerNode = this.layers.get(uiConfig.layer)!;
-        layerNode?.addChild(uiNode);
+        layerNode?.addChild(uiNode);        
 
         // 获取 UIBase 组件
         const uiBase = uiNode.getComponent(UIBase);

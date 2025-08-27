@@ -2,8 +2,8 @@
  * UI 动画接口
  */
 interface UIAnimation {
-    show: (node: cc.Node, duration: number) => void;
-    hide: (node: cc.Node, duration: number) => void;
+    show: (node: cc.Node, animationNode: cc.Node, duration: number) => void;
+    hide: (node: cc.Node, animationNode: cc.Node, duration: number) => void;
 }
 
 /**
@@ -40,43 +40,52 @@ export default class UIAnimationManager {
 
     private initDefaultAnimations() {
         this.registerAnimation('fade', {
-            show: (node: cc.Node, duration: number = 0.3) => {
+            show: (node: cc.Node, animationNode: cc.Node, duration: number = 0.3) => {
                 node.opacity = 0;
                 return cc.tween(node)
-                    .to(duration, { opacity: 255 })                    
+                    .to(duration, { opacity: 255 })
             },
-            hide: (node: cc.Node, duration: number = 0.3) => {
+            hide: (node: cc.Node, animationNode: cc.Node, duration: number = 0.3) => {
                 return cc.tween(node)
                     .to(duration, { opacity: 0 })
                     .call(() => {
                         node.active = false;
-                    })                    
+                    })
             }
         });
 
         this.registerAnimation('scale', {
-            show: function (node: cc.Node, duration: number = 0.3) {
-                node.scale = 0;
-                return cc.tween(node)
-                    .to(duration, { scale: 1 }, { easing: 'backOut' })                 
+            show: function (node: cc.Node, animationNode: cc.Node, duration: number = 0.3) {
+                let doActionNode:cc.Node = node;
+                if(node.uuid !== animationNode.uuid){
+                    doActionNode = animationNode;
+                }
+
+                doActionNode.scale = 0;                        
+                return cc.tween(doActionNode)
+                    .to(duration, { scale: 1 }, { easing: 'backOut' })
             },
-            hide: function (node: cc.Node, duration: number = 0.3) {
-                return cc.tween(node)
+            hide: function (node: cc.Node, animationNode: cc.Node, duration: number = 0.3) {
+                let doActionNode:cc.Node = node;
+                if(node.uuid !== animationNode.uuid){
+                    doActionNode = animationNode;
+                }
+                return cc.tween(doActionNode)
                     .to(duration, { scale: 0 }, { easing: 'backIn' })
                     .call(() => {
                         node.active = false;
-                    })                    
+                    })
             }
         });
 
         this.registerAnimation('slide-right', {
-            show: function (node: cc.Node, duration: number = 0.4) {                
+            show: function (node: cc.Node, animationNode: cc.Node, duration: number = 0.4) {
                 const startPos = new cc.Vec3(1000, 0, 0);
-                node.setPosition(startPos);            
+                node.setPosition(startPos);
                 return cc.tween(node)
                     .to(duration, { position: cc.Vec3.ZERO }, { easing: 'cubicOut' })
             },
-            hide: function (node: cc.Node, duration: number = 0.4) {
+            hide: function (node: cc.Node, animationNode: cc.Node, duration: number = 0.4) {
                 const endPos = new cc.Vec3(1000, node.position.y, node.position.z);
                 return cc.tween(node)
                     .to(duration, { position: endPos }, { easing: 'cubicIn' })
