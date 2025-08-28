@@ -91,8 +91,7 @@ export default class UIManager {
         //动画组件
         const animationComponent = uiNode.getComponent(UIAnimationComponent);
         if (animationComponent && animationComponent.enabled) {
-            await animationComponent.playShowAnimation();
-          
+            await animationComponent.playShowAnimation();         
         } 
         
         uiBase.onShow();
@@ -121,12 +120,11 @@ export default class UIManager {
             return;
         }
 
-        // 标记为关闭中
-        this.closingSet.add(uiName);
-
         const uiBase = uiNode.getComponent(UIBase);
 
+        //不存在UIBase组件
         if (!uiBase) {
+            this.closingSet.add(uiName);
             uiNode.destroy();
             this.activeViews.delete(uiName);
             this.closingSet.delete(uiName); // 清除标记
@@ -135,20 +133,25 @@ export default class UIManager {
 
         //动画组件
         const animationComponent = uiNode.getComponent(UIAnimationComponent);
-        if (animationComponent && animationComponent.enabled) {
-            animationComponent.playHideAnimation()
-                .then(() => {
-                    uiBase.onHide();
-                    this.removeUI(uiName);
-                })
-                .finally(() => {
-                    this.closingSet.delete(uiName); // 清除标记
-                })
-        } else {
+
+        //没有挂载动画组件 或者 没有启用动画组件
+        if (!animationComponent || !animationComponent.enabled) {
+            this.closingSet.add(uiName);
             uiBase.onHide();
             this.removeUI(uiName);
             this.closingSet.delete(uiName); // 清除标记
-        }
+            return;
+        } else {
+            const hidePromise = animationComponent.playHideAnimation();
+            if (hidePromise) {
+                this.closingSet.add(uiName);
+                hidePromise.then(() => {
+                    uiBase.onHide();
+                    this.removeUI(uiName);
+                    this.closingSet.delete(uiName);
+                })
+            }
+        }       
     }
 
     private removeUI(uiName: string) {

@@ -25,7 +25,6 @@ export default class UIFillAndFitUniform extends cc.Component {
     /**更新布局 */
     private updateLayout() {
 
-
         if (cc.isValid(this.maskNode)) {
 
             // 此函数是为了在 浏览器 中进行预览时，能够正常显示

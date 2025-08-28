@@ -1,4 +1,3 @@
-import UIAnimationComponent from "./UIAnimationComponent";
 import UIManager from "./UIManager";
 
 const { ccclass, property } = cc._decorator;
