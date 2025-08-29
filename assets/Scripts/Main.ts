@@ -1,11 +1,10 @@
-import Log from "../Core/Log/Log";
-import ResLoad from "../Core/ResLoad/ResLoad";
-import { UIConfig } from "../Core/UI/UIConfig";
-import { UILayer } from "../Core/UI/UILayer";
-import UIManager from "../Core/UI/UIManager";
-import FrameLoading from "../Core/Utils/FrameLoadingTool";
-import ObjectPoolTool from "../Core/Utils/ObjectPoolTool";
-import ResManager from "../Core/Utils/ResManagerTool";
+import { SoundController } from "../core/audio";
+import { Log } from "../core/log";
+import { HttpClient } from "../core/net/http";
+import { ObjectPool } from "../core/pool";
+import { ResourceLoader, ResourceManager } from "../core/resource";
+import { UIConfig, UILayer, UIManager } from "../core/ui";
+import { FrameLoading } from "../core/utils";
 
 const { ccclass, property } = cc._decorator;
 
@@ -19,16 +18,20 @@ export default class Main extends cc.Component {
     @property({ type: cc.Node, tooltip: '' })
     nodeContent: cc.Node = null;
 
-    private m_resManager: ResManager = null;
+    private m_resManager: ResourceManager = null;
 
     private m_frameLoading: FrameLoading = null;
 
-    private m_objectPoolTool: ObjectPoolTool = null;
+    private m_objectPoolTool: ObjectPool = null;
+
+    private m_soundController: SoundController = null;
+
+    private m_http: HttpClient = null;
 
     protected onLoad(): void {
-        this.m_resManager = new ResManager();
+        this.m_resManager = new ResourceManager();
         this.m_frameLoading = new FrameLoading();
-        this.m_objectPoolTool = new ObjectPoolTool();
+        this.m_objectPoolTool = new ObjectPool();
 
         this.m_objectPoolTool.setMaxPoolSize(10);
 
@@ -36,7 +39,7 @@ export default class Main extends cc.Component {
     }
 
     protected start(): void {
-        
+        Log.log("Main start");
     }
 
 
@@ -112,8 +115,8 @@ export default class Main extends cc.Component {
         //     console.error("ResManager loadResAsync error:", err);
         // }
 
-        const promise1 = ResLoad.instance.loadResAsync<cc.SpriteFrame>("Sprites/spr_3", cc.SpriteFrame);
-        const promise2 = ResLoad.instance.loadResAsync<cc.SpriteFrame>("Sprites/spr_3", cc.SpriteFrame);
+        const promise1 = ResourceLoader.instance.loadResAsync<cc.SpriteFrame>("Sprites/spr_3", cc.SpriteFrame);
+        const promise2 = ResourceLoader.instance.loadResAsync<cc.SpriteFrame>("Sprites/spr_3", cc.SpriteFrame);
         const [sprFrame1, sprFrame2] = await Promise.all([promise1, promise2]);
         const node = new cc.Node();
         node.addComponent(cc.Sprite).spriteFrame = sprFrame1;
