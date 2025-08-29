@@ -324,8 +324,8 @@
       "__id__": 1
     },
     "_enabled": true,
-    "showAnimation": 5,
-    "hideAnimation": 5,
+    "showAnimation": 2,
+    "hideAnimation": 2,
     "showDuration": 1,
     "hideDuration": 1,
     "animationNode": {

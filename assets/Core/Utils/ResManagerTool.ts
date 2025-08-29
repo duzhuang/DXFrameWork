@@ -49,7 +49,7 @@ export default class ResManagerTool {
      * 异步加载资源（支持缓存）
      * @param path 路径
      * @param type 资源类型
-     * @param useCache 是否使用缓存
+     * @param useCache 是否使用缓存（默认：true 使用缓存）
      * @returns
      */
     public async loadResAsync<T extends cc.Asset>(

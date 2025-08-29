@@ -1,5 +1,6 @@
 import Log from "../Core/Log/Log";
 import ResLoad from "../Core/ResLoad/ResLoad";
+import { UIConfig } from "../Core/UI/UIConfig";
 import { UILayer } from "../Core/UI/UILayer";
 import UIManager from "../Core/UI/UIManager";
 import FrameLoading from "../Core/Utils/FrameLoadingTool";
@@ -123,15 +124,19 @@ export default class Main extends cc.Component {
         node2.addComponent(cc.Sprite).spriteFrame = sprFrame2;
         node2.parent = this.node;
         node2.setPosition(0, -200);
+    } 
+
+    async onClickLoadPrefab() {
+        const uiConfig: UIConfig = {
+            uiID: "prefabUI1",
+            prefabPath: "Prefabs/prefabUI1",
+            layer: UILayer.PopUp,   
+            cache: true,
+        }
+        await UIManager.instance.open(uiConfig);      
     }
 
-    private m_isClear = false;
-
-    onClickLoadPrefab() {
-        UIManager.instance.openUI({ uiName: "prefabUI1", prefabPath: "Prefabs/prefabUI1", layer: UILayer.NORMAL });
-    }
-
-    onClickClosePrefab() {
-        UIManager.instance.closeUI("prefabUI1");
+    async onClickClosePrefab() {
+        await UIManager.instance.close("prefabUI1", true);
     }
 }

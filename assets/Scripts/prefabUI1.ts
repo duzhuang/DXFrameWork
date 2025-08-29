@@ -5,7 +5,7 @@ const { ccclass, property } = cc._decorator;
 @ccclass
 export default class prefabUI1 extends UIBase {
 
-    uiName: string = "prefabUI1";
+    viewName: string = "prefabUI1";
 
     init(data?: any): void {
         console.log("prefabUI1 init");
@@ -20,6 +20,6 @@ export default class prefabUI1 extends UIBase {
     }
 
     onClickClose(): void {
-        this.close();
+        this.closeView();
     }
 }
