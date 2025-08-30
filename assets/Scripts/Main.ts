@@ -1,11 +1,20 @@
-import Log from "../Core/Log/Log";
-import ResLoad from "../Core/ResLoad/ResLoad";
-import { UIConfig } from "../Core/UI/UIConfig";
-import { UILayer } from "../Core/UI/UILayer";
-import UIManager from "../Core/UI/UIManager";
-import FrameLoading from "../Core/Utils/FrameLoadingTool";
-import ObjectPoolTool from "../Core/Utils/ObjectPoolTool";
-import ResManager from "../Core/Utils/ResManagerTool";
+import { Log } from "../core/log/index";
+import { EventCenter } from "../core/event/index";
+
+import ResLoad from "../core/resource/loader/ResourceLoader";
+import { UIConfig } from "../core/ui/config/UIConfig";
+import { UILayer } from "../core/ui/layer/UILayer";
+import UIManager from "../core/ui/manager/UIManager";
+import FrameLoading from "../core/Utils/FrameLoadingTool";
+
+
+import { HttpClient, WSClient } from "../core/network/index";
+
+import { ResourceManager } from "../core/resource/index";
+
+import { SoundController } from "../core/audio/index";
+
+import { ObjectPool } from "../core/pool/index";
 
 const { ccclass, property } = cc._decorator;
 
@@ -17,18 +26,18 @@ export default class Main extends cc.Component {
     prefabRect: cc.Prefab = null;
 
     @property({ type: cc.Node, tooltip: '' })
-    nodeContent: cc.Node = null;
+    nodeContent: cc.Node = null;  
 
-    private m_resManager: ResManager = null;
+    private m_resManager: ResourceManager = null;
 
     private m_frameLoading: FrameLoading = null;
 
-    private m_objectPoolTool: ObjectPoolTool = null;
+    private m_objectPoolTool: ObjectPool = null;
 
     protected onLoad(): void {
-        this.m_resManager = new ResManager();
+        this.m_resManager = new ResourceManager();
         this.m_frameLoading = new FrameLoading();
-        this.m_objectPoolTool = new ObjectPoolTool();
+        this.m_objectPoolTool = new ObjectPool();
 
         this.m_objectPoolTool.setMaxPoolSize(10);
 
@@ -36,7 +45,23 @@ export default class Main extends cc.Component {
     }
 
     protected start(): void {
-        
+
+        SoundController
+
+        EventCenter.onEvent("TestEvent", this.onTestEvent, this);
+
+       Log.log("Main start 测试 Log 文件的导出是否成功");
+
+        let httpClient = new HttpClient();
+        let wsClient = new WSClient();
+    }   
+
+    protected onDestroy(): void {
+        EventCenter.offEvent("TestEvent", this.onTestEvent, this);
+    }
+
+    private onTestEvent(data: any) {
+
     }
 
 

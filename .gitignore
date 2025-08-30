@@ -1,0 +1,15 @@
+.DS_Store
+*/.DS_Store
+*/.idea
+library/*
+local/*
+temp/*
+build/*
+library/
+local/
+temp/
+build/
+nohup.out
+.vscode/
+node_modules
+*.bak*
