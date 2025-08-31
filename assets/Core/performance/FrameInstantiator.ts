@@ -1,7 +1,56 @@
 /**
- * 分帧实例化管理器
+ * FrameInstantiator
+ *
+ * 概述：
+ *   将一次性的大量实例化操作分散到多帧中执行，
+ *   平滑分摊 CPU 开销，避免卡顿。
+ *
+ * 特性：
+ *   - 按帧调度实例化，限制每帧最大实例化数量
+ *   - 基于时间预算动态调节实例化数量
+ *   - 支持多个任务排队，依次执行
+ *
+ * 使用步骤：
+ *   1. 导入并获取单例
+ *      import FrameInstantiator from 'core/performance/FrameInstantiator';
+ *      const instantiator = FrameInstantiator.instance;
+ *
+ *   2. 添加实例化任务
+ *      instantiator.addTask(
+ *        source,    // cc.Prefab 或 cc.Node
+ *        count,     // 总共要实例化的数量
+ *        (node, index) => {
+ *          // 每次实例化完成后回调
+ *          parentNode.addChild(node);
+ *        }
+ *      );
+ *
+ *   3. 可选：清空所有待执行任务
+ *      instantiator.clear();
+ *
+ * API：
+ *   addTask(
+ *     source: cc.Prefab | cc.Node,
+ *     count: number,
+ *     callback?: (node: cc.Node, index: number) => void
+ *   ): void
+ *
+ *   clear(): void
+ *
+ * 参数说明：
+ *   source    要实例化的源，可传 Prefab 或已有 Node  
+ *   count     需要实例化的个数  
+ *   callback  每实例化一个新节点触发，参数 (node, index)  
+ *
+ * 配置属性（可在类内部直接调整）：
+ *   MAX_PRELOAD_FRAME       每帧最大实例化数量，默认 5  
+ *   MAX_PRELOAD_FRAME_MAX   每帧最大上限，默认 20  
+ *   FRAME_TIME_BUDGET       单帧时间预算（ms），默认 8  
+ *   REDUCE_FRAME            帧率低于此值时减速，默认 30fps  
+ *   INCREASE_FRAME          帧率高于此值时提速，默认 50fps  
  */
-export default class FrameLoadingTool {
+
+export default class FrameInstantiator {
     /**队列 */
     private m_loadingQueue: {
         source: cc.Prefab | cc.Node,
@@ -32,7 +81,12 @@ export default class FrameLoadingTool {
     private m_isRuning: boolean = false;
 
 
-
+    /**
+     * 添加任务
+     * @param source 资源
+     * @param count 数量
+     * @param callback 回调
+     */
     public addTask(
         source: cc.Prefab | cc.Node,
         count: number,

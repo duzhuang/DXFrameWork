@@ -5,7 +5,7 @@ import ResLoad from "../core/resource/loader/ResourceLoader";
 import { UIConfig } from "../core/ui/config/UIConfig";
 import { UILayer } from "../core/ui/layer/UILayer";
 import UIManager from "../core/ui/manager/UIManager";
-import FrameLoading from "../core/Utils/FrameLoadingTool";
+import FrameLoading from "../core/performance/FrameInstantiator";
 
 
 import { HttpClient, WSClient } from "../core/network/index";
