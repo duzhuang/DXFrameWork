@@ -1,1 +1,1 @@
-export { default as FrameInstantiator } from "./FrameInstantiator";
+export { default as FrameInstantiatorService } from "./FrameInstantiatorService";

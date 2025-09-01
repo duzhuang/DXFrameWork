@@ -5,7 +5,6 @@ import ResLoad from "../core/resource/loader/ResourceLoader";
 import { UIConfig } from "../core/ui/config/UIConfig";
 import { UILayer } from "../core/ui/layer/UILayer";
 import UIManager from "../core/ui/manager/UIManager";
-import FrameLoading from "../core/performance/FrameInstantiator";
 
 
 import { HttpClient, WSClient } from "../core/network/index";
@@ -30,13 +29,11 @@ export default class Main extends cc.Component {
 
     private m_resManager: ResourceManager = null;
 
-    private m_frameLoading: FrameLoading = null;
-
     private m_objectPoolTool: ObjectPool = null;
 
     protected onLoad(): void {
         this.m_resManager = new ResourceManager();
-        this.m_frameLoading = new FrameLoading();
+     
         this.m_objectPoolTool = new ObjectPool();
 
         this.m_objectPoolTool.setMaxPoolSize(10);
