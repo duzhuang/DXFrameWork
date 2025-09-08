@@ -50,12 +50,13 @@ export default class RedDotComponent extends cc.Component {
         this.updateRedDot(value);
     }
 
-    protected start(): void {
-
+    protected start(): void {  
+             
     }
 
     protected onDestroy(): void {
-
+        const system = RedDotSystem.instance;
+        system.removeListener(this.redDotKey, this.onChangeListener);
     }
 
     /**

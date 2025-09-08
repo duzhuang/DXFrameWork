@@ -15,6 +15,10 @@ export default class RedDotSystem {
     private m_root: RedDotNode = null;
     /**节点字典 */
     private m_nodes: Map<string, RedDotNode> = new Map();
+    /**脏节点集合 */
+    private m_dirtyNodes: Set<RedDotNode> = new Set();
+    /**更新调度标志 */
+    private m_updateSchedule: boolean = false;
 
     private constructor() {
         this.m_root = new RedDotNode("root");
@@ -43,7 +47,6 @@ export default class RedDotSystem {
             this.traverseDFS(child, key);
         }
     }
-
 
 
     /**
@@ -78,7 +81,61 @@ export default class RedDotSystem {
         const redDotNode = this.getNode(key);
         if (redDotNode) {
             redDotNode.setValue(value);
+            this.scheduleUpdate();
         }
+    }
+
+    /**
+     * 添加脏节点
+     * @param node 脏节点
+     */
+    public addDirtyNode(node: RedDotNode) {
+        this.m_dirtyNodes.add(node);
+        this.scheduleUpdate();
+    }
+
+    /**批量更新 */
+    private scheduleUpdate(): void {
+        if (this.m_updateSchedule) return;
+        this.m_updateSchedule = true;
+        setTimeout(() => {
+            this.batchUpdate();
+        }, 0);
+    }
+
+    private batchUpdate(): void {
+        this.m_updateSchedule = false;
+        if (this.m_dirtyNodes.size == 0) return;
+
+        // 收集需要通知的节点
+        const nodesToNotify: RedDotNode[] = [];
+       
+        // 按照层级排序，确保先更新子节点再更新父节点
+        const sortedDirtyNodes = Array.from(this.m_dirtyNodes).sort((a, b) => {
+            return b.getKey().split('_').length - a.getKey().split('_').length;
+        });
+
+        // 将根节点从脏数据中移除
+        const rootNode = sortedDirtyNodes.splice(sortedDirtyNodes.indexOf(this.m_root), 1)[0];
+        // 将根节点添加到列表的最后
+        sortedDirtyNodes.push(rootNode); 
+
+        // 更新所有脏节点
+        sortedDirtyNodes.forEach(node => {
+            if (node.updateValue()) {
+                //console.log(`更新节点: ${node.getKey()}`);
+                //console.log(`节点 ${node.getKey()} 更新后的值: ${node.getValue()}`);
+                nodesToNotify.push(node);
+            }
+        });
+
+        // 清空脏节点集合
+        this.m_dirtyNodes.clear();
+
+        // 通知所有需要通知的节点
+        nodesToNotify.forEach(node => {
+            node.notifyListeners();
+        });
     }
 
     /**
@@ -143,5 +200,10 @@ export default class RedDotSystem {
         if (redDotNode) {
             redDotNode.removeListener(listener);
         }
+    }
+
+    /**强制立即更新 */
+    public forceUpdate() {
+        this.batchUpdate();
     }
 }

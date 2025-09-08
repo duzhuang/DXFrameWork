@@ -46,12 +46,11 @@ export default class redDot extends cc.Component {
                 children: [
                     {
                         key: "l3_1",
-                        children: [
-                            {
-                                key: "l3_1_1",
-                                children: []
-                            }
-                        ]
+                        children: []
+                    },
+                    {
+                        key: "l3_2",
+                        children: []
                     }
                 ]
             }
@@ -65,7 +64,7 @@ export default class redDot extends cc.Component {
     }
 
     private registerEvent(): void {
-        EventCenter.onEvent("redDotChange", this.onRedDotChange, this);        
+        EventCenter.onEvent("redDotChange", this.onRedDotChange, this);
     }
 
     protected start(): void {
@@ -73,16 +72,16 @@ export default class redDot extends cc.Component {
     }
 
     protected onDestroy(): void {
-        EventCenter.offEvent("redDotChange", this.onRedDotChange, this);        
+        EventCenter.offEvent("redDotChange", this.onRedDotChange, this);
     }
 
     /**红点值改变 */
     private onRedDotChange(data: { key: string, value: number }): void {
         const redDot = RedDotSystem.instance.getNode(data.key);
         if (redDot) {
-            if(data.value > 0){
-                RedDotSystem.instance.increment(data.key,data.value);
-            }else{
+            if (data.value > 0) {
+                RedDotSystem.instance.increment(data.key, data.value);
+            } else {
                 RedDotSystem.instance.decrement(data.key, -data.value);
             }
         }
