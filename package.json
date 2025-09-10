@@ -1,0 +1,11 @@
+{
+    "scripts": {
+        "postinstall": "npm run copy:red-dot",
+        "copy:red-dot": "node scripts/copy-red-dot.js",
+        "copy:red-dot:force": "node scripts/copy-red-dot.js force"
+    },
+    "dependencies": {
+        "cocos-red-dot-system": "file:./dx_framework/src/modules/cocos-red-dot-system",
+        "force": "^0.0.3"
+    }
+}

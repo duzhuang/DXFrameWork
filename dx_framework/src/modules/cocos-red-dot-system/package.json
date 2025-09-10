@@ -1,0 +1,14 @@
+{
+    "name": "cocos-red-dot-system",
+    "version": "1.0.0",
+    "main": "dist/index.js",
+    "typings": "dist/index.d.ts",
+    "scripts": {
+        "build": "tsc -b"       
+    },
+    "dependencies": {},
+    "devDependencies": {
+        "typescript": "^4.5.0",
+        "fs-extra": "^10.0.0"
+    }
+}

@@ -1,5 +1,5 @@
 import { EventCenter } from "../../core/event/index";
-import { IRedDotConfig, RedDotSystem } from "../../core/redDot";
+import { IRedDotConfig, RedDotSystem } from "../red-dot-system";
 
 const { ccclass, property } = cc._decorator;
 

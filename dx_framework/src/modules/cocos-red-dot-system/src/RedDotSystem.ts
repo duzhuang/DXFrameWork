@@ -1,18 +1,21 @@
 import RedDotNode from "./RedDotNode";
-import IRedDotConfig from "./IRedDotConfig";
+import { IRedDotConfig } from "./types";
+import Module from "../../../core/Module";
+import IModules from "../../../core/IModules";
 
 //红点系统
-export default class RedDotSystem {
+@Module("RedDotSystem")
+export default class RedDotSystem implements IModules {
     //单例类
-    private static m_instance: RedDotSystem = null;
+    private static m_instance: RedDotSystem | null = null;
     public static get instance(): RedDotSystem {
-        if (!this.m_instance) {
+        if (this.m_instance === null) {
             this.m_instance = new RedDotSystem();
         }
         return this.m_instance;
     }
     /**根节点 */
-    private m_root: RedDotNode = null;
+    private m_root: RedDotNode | null = null;
     /**节点字典 */
     private m_nodes: Map<string, RedDotNode> = new Map();
     /**脏节点集合 */
@@ -20,10 +23,39 @@ export default class RedDotSystem {
     /**更新调度标志 */
     private m_updateSchedule: boolean = false;
 
-    private constructor() {
+    public constructor() {
         this.m_root = new RedDotNode("root");
         this.m_nodes.set("root", this.m_root);
     }
+
+    // -- IModules 接口 -- //
+
+    /** 初始化阶段（可在此读取配置） */
+    public onInit(): void {
+
+    }
+
+    /**启动阶段（场景启动后启动） */
+    public onStart(): void {
+
+    }
+
+    /**每帧调用 */
+    public onUpdate(dt: number): void {
+
+    }
+
+    /**销毁阶段（场景切换或热重载前调用） */
+    public onDestroy(): void {
+        this.m_nodes.clear();
+        this.m_dirtyNodes.clear();
+        this.m_updateSchedule = false;
+        this.m_root = new RedDotNode('root');
+        this.m_nodes.set('root', this.m_root);
+    }
+
+
+    // —— RedDotSystem 专属方法 —— //
 
     /**
      * 初始化
@@ -43,8 +75,10 @@ export default class RedDotSystem {
     private traverseDFS(config: IRedDotConfig, parentKey?: string) {
         const { key, children } = config;
         this.registerNode(key, parentKey);
-        for (const child of children) {
-            this.traverseDFS(child, key);
+        if (children) {
+            for (const child of children) {
+                this.traverseDFS(child, key);
+            }
         }
     }
 
@@ -55,7 +89,7 @@ export default class RedDotSystem {
      * @param parentKey 父节点key 默认为root
      * @returns 红点节点
      */
-    public registerNode(key: string, parentKey?: string): RedDotNode {
+    public registerNode(key: string, parentKey?: string): RedDotNode | undefined {
         if (this.m_nodes.has(key)) {
             return this.m_nodes.get(key);
         }
@@ -72,7 +106,7 @@ export default class RedDotSystem {
     }
 
     /**获取节点 */
-    public getNode(key: string): RedDotNode {
+    public getNode(key: string): RedDotNode | undefined {
         return this.m_nodes.get(key);
     }
 
@@ -109,19 +143,20 @@ export default class RedDotSystem {
 
         // 收集需要通知的节点
         const nodesToNotify: RedDotNode[] = [];
-       
+
         // 按照层级排序，确保先更新子节点再更新父节点
         const sortedDirtyNodes = Array.from(this.m_dirtyNodes).sort((a, b) => {
             return b.getKey().split('_').length - a.getKey().split('_').length;
         });
 
-        // 将根节点从脏数据中移除
-        const rootNode = sortedDirtyNodes.splice(sortedDirtyNodes.indexOf(this.m_root), 1)[0];
-        // 将根节点添加到列表的最后
-        sortedDirtyNodes.push(rootNode); 
+        // 过滤掉根节点
+        const nonRootNodes = sortedDirtyNodes.filter(node => node !== this.m_root);
+
+        // 如果根节点存在，添加到末尾        
+        nonRootNodes.push(this.m_root!);
 
         // 更新所有脏节点
-        sortedDirtyNodes.forEach(node => {
+        nonRootNodes.forEach(node => {
             if (node.updateValue()) {
                 //console.log(`更新节点: ${node.getKey()}`);
                 //console.log(`节点 ${node.getKey()} 更新后的值: ${node.getValue()}`);
