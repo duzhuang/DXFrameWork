@@ -1,5 +1,6 @@
 import { EventCenter } from "../../core/event/index";
-import { IRedDotConfig, RedDotSystem } from "../../core/redDot";
+import { ModuleManager } from "../../dx-framework/src/core/index";
+import { IRedDotConfig, RedDotSystem } from "../../dx-framework/src/modules/red-dot-system/index";
 
 const { ccclass, property } = cc._decorator;
 
@@ -58,6 +59,9 @@ export default class redDot extends cc.Component {
     }
 
     protected onLoad(): void {
+
+        ModuleManager.instance.startAll();
+
         this.registerEvent();
         //this.initRedDotSystem();
         this.initRedDotSystemByConfig(this.redDotConfig);
@@ -69,6 +73,10 @@ export default class redDot extends cc.Component {
 
     protected start(): void {
 
+    }
+
+    protected update(dt: number): void {
+        ModuleManager.instance.updateAll(dt);
     }
 
     protected onDestroy(): void {

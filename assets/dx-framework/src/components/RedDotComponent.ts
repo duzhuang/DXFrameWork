@@ -1,4 +1,5 @@
-import RedDotSystem from "./RedDotSystem";
+import RedDotSystem from "../modules/red-dot-system/RedDotSystem";
+
 
 const { ccclass, property, menu } = cc._decorator;
 

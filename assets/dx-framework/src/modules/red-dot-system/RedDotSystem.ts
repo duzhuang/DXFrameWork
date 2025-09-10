@@ -1,29 +1,66 @@
 import RedDotNode from "./RedDotNode";
 import IRedDotConfig from "./IRedDotConfig";
+import Module from "../../decorators/Moudle";
+import { IModule } from "../../core/index";
 
 //红点系统
-export default class RedDotSystem {
-    //单例类
-    private static m_instance: RedDotSystem = null;
-    public static get instance(): RedDotSystem {
-        if (!this.m_instance) {
-            this.m_instance = new RedDotSystem();
-        }
-        return this.m_instance;
-    }
-    /**根节点 */
-    private m_root: RedDotNode = null;
-    /**节点字典 */
-    private m_nodes: Map<string, RedDotNode> = new Map();
-    /**脏节点集合 */
-    private m_dirtyNodes: Set<RedDotNode> = new Set();
-    /**更新调度标志 */
-    private m_updateSchedule: boolean = false;
+@Module("RedDotSystem")
+export default class RedDotSystem implements IModule {
 
-    private constructor() {
-        this.m_root = new RedDotNode("root");
-        this.m_nodes.set("root", this.m_root);
+    /** 全局单例 */
+    public static readonly instance = new RedDotSystem();
+
+    /** 根节点 */
+    private m_root: RedDotNode;
+
+    /** key → 节点 映射，O(1) 查找 */
+    private m_nodes: Map<string, RedDotNode> = new Map();
+
+    /** 本帧所有「脏」节点，等待统一刷新 */
+    private m_dirtyNodes: Set<RedDotNode> = new Set();
+
+    /** 是否已调度下一帧刷新 */
+    private m_scheduled: boolean = false;
+
+    public constructor() {
+        // 构建根节点
+        this.m_root = new RedDotNode('root');
+        this.m_nodes.set('root', this.m_root);
     }
+
+
+    // —— IModule 接口 —— //
+
+    /** 初始化阶段（可在此读取配置） */
+    public onInit(config?: IRedDotConfig): void {
+        console.log("RedDotSystem onInit");
+        if (config) {
+            this.init(config);
+        }
+    }
+
+    /** 启动阶段（场景启动后调用） */
+    public onStart(): void {
+        console.log("RedDotSystem onStart");
+    }
+
+    /** 每帧更新（如果你需要在 update 里做额外逻辑可实现） */
+    public onUpdate(dt: number): void {        
+        // scheduleFlush 已经用 scheduler 调度，无需在这里再手动 flush
+    }
+
+    /** 销毁阶段（场景切换或热重载前调用） */
+    public onDestroy(): void {
+        this.m_nodes.clear();
+        this.m_dirtyNodes.clear();
+        this.m_scheduled = false;
+        this.m_root = new RedDotNode('root');
+        this.m_nodes.set('root', this.m_root);
+        console.log("RedDotSystem onDestroy");
+    }
+
+
+    // —— RedDotSystem 专属方法 —— //
 
     /**
      * 初始化
@@ -32,7 +69,6 @@ export default class RedDotSystem {
     public init(config: IRedDotConfig) {
         // 对config进行递归遍历，注册红点节点
         this.traverseDFS(config)
-
     }
 
     /**
@@ -96,20 +132,20 @@ export default class RedDotSystem {
 
     /**批量更新 */
     private scheduleUpdate(): void {
-        if (this.m_updateSchedule) return;
-        this.m_updateSchedule = true;
+        if (this.m_scheduled) return;
+        this.m_scheduled = true;
         setTimeout(() => {
             this.batchUpdate();
         }, 0);
     }
 
     private batchUpdate(): void {
-        this.m_updateSchedule = false;
+        this.m_scheduled = false;
         if (this.m_dirtyNodes.size == 0) return;
 
         // 收集需要通知的节点
         const nodesToNotify: RedDotNode[] = [];
-       
+
         // 按照层级排序，确保先更新子节点再更新父节点
         const sortedDirtyNodes = Array.from(this.m_dirtyNodes).sort((a, b) => {
             return b.getKey().split('_').length - a.getKey().split('_').length;
@@ -118,7 +154,7 @@ export default class RedDotSystem {
         // 将根节点从脏数据中移除
         const rootNode = sortedDirtyNodes.splice(sortedDirtyNodes.indexOf(this.m_root), 1)[0];
         // 将根节点添加到列表的最后
-        sortedDirtyNodes.push(rootNode); 
+        sortedDirtyNodes.push(rootNode);
 
         // 更新所有脏节点
         sortedDirtyNodes.forEach(node => {
