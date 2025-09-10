@@ -1,6 +1,8 @@
 import { EventCenter } from "../../core/event/index";
 import { ModuleManager } from "../../dx-framework/src/core/index";
+import { RedDotKeys } from "../../dx-framework/src/generated/red-dot-keys";
 import { IRedDotConfig, RedDotSystem } from "../../dx-framework/src/modules/red-dot-system/index";
+
 
 const { ccclass, property } = cc._decorator;
 
@@ -63,8 +65,8 @@ export default class redDot extends cc.Component {
         ModuleManager.instance.startAll();
 
         this.registerEvent();
-        //this.initRedDotSystem();
-        this.initRedDotSystemByConfig(this.redDotConfig);
+        this.initRedDotSystem();
+        //this.initRedDotSystemByConfig(this.redDotConfig);
     }
 
     private registerEvent(): void {
@@ -114,18 +116,20 @@ export default class redDot extends cc.Component {
      */
     private initRedDotSystem(): void {
         const redDotSystem = RedDotSystem.instance;
-        redDotSystem.registerNode('l1');
+        redDotSystem.registerNode(RedDotKeys.ROOT);
 
-        redDotSystem.registerNode('l1_1', 'l1');
-        redDotSystem.registerNode('l1_1_1', 'l1_1');
-        redDotSystem.registerNode('l1_1_2', 'l1_1');
+        redDotSystem.registerNode(RedDotKeys.ROOT_TASK);
+        redDotSystem.registerNode(RedDotKeys.ROOT_TASK_DAILY, RedDotKeys.ROOT_TASK);
+        redDotSystem.registerNode(RedDotKeys.ROOT_TASK_DAILY_DAILY1, RedDotKeys.ROOT_TASK_DAILY);
+        redDotSystem.registerNode(RedDotKeys.ROOT_TASK_DAILY_DAILY2, RedDotKeys.ROOT_TASK_DAILY);
 
-        redDotSystem.registerNode("l1_2", "l1");
-        redDotSystem.registerNode("l1_2_1", "l1_2");
-        redDotSystem.registerNode("l1_2_2", "l1_2");
+        redDotSystem.registerNode(RedDotKeys.ROOT_TASK_ACHIEVEMENT, RedDotKeys.ROOT_TASK);
+        redDotSystem.registerNode(RedDotKeys.ROOT_TASK_ACHIEVEMENT_ACHIEVEMENT1, RedDotKeys.ROOT_TASK_ACHIEVEMENT);
+        redDotSystem.registerNode(RedDotKeys.ROOT_TASK_ACHIEVEMENT_ACHIEVEMENT2, RedDotKeys.ROOT_TASK_ACHIEVEMENT);
 
-        redDotSystem.registerNode("l3");
-        redDotSystem.registerNode("l3_1", "l3");
-        redDotSystem.registerNode("l3_1_1", "l3_1");
+        redDotSystem.registerNode(RedDotKeys.ROOT_MAIL);
+        redDotSystem.registerNode(RedDotKeys.ROOT_MAIL_MAIL1, RedDotKeys.ROOT_MAIL);
+        redDotSystem.registerNode(RedDotKeys.ROOT_MAIL_MAIL2, RedDotKeys.ROOT_MAIL);
+
     }
 }

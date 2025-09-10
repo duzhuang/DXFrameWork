@@ -1,0 +1,48 @@
+{
+    "$schema": "./red-dot-system-schema.json",
+    "nodes": {
+        "root": {
+            "description": "红点系统",
+            "children": {
+                "task": {
+                    "description": "任务红点",
+                    "children": {
+                        "daily": {
+                            "description": "每日任务",
+                            "children": {
+                                "daily1": {
+                                    "description": "每日任务1"
+                                },
+                                "daily2": {
+                                    "description": "每日任务2"
+                                }
+                            }
+                        },
+                        "achievement": {
+                            "description": "成就任务",
+                            "children": {
+                                "achievement1": {
+                                    "description": "成就任务1"
+                                },
+                                "achievement2": {
+                                    "description": "成就任务2"
+                                }
+                            }
+                        }
+                    }
+                },
+                "mail": {
+                    "description": "邮件红点",
+                    "children": {
+                        "mail1": {
+                            "description": "收件箱"
+                        },
+                        "mail2": {
+                            "description": "系统邮件"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

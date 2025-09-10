@@ -1,13 +1,13 @@
 import RedDotSystem from "../modules/red-dot-system/RedDotSystem";
-
+import { RedDotType, RedDotTypeMap } from "../generated/red-dot-keys";
 
 const { ccclass, property, menu } = cc._decorator;
 
 @ccclass()
-@menu('UI/RedDot/RedDotComponent')
+@menu('UI/RedDotSystem/RedDotComponent')
 export default class RedDotComponent extends cc.Component {
-    @property({ tooltip: '关联的红点键值' })
-    public redDotKey = "";
+    @property({ tooltip: '关联的红点键值', type: RedDotType })
+    public redDotKey = RedDotType.ROOT;
 
     @property({ type: cc.Node, tooltip: '红点节点' })
     public redDot: cc.Node = null!;
@@ -44,20 +44,22 @@ export default class RedDotComponent extends cc.Component {
         }
 
         const system = RedDotSystem.instance;
-        system.addListener(this.redDotKey, this.onChangeListener);
+        const token: string = RedDotTypeMap[this.redDotKey];
+        system.addListener(token, this.onChangeListener);
 
         //初始化状态
-        const value = system.getValue(this.redDotKey);
+        const value = system.getValue(token);
         this.updateRedDot(value);
     }
 
-    protected start(): void {  
-             
+    protected start(): void {
+
     }
 
     protected onDestroy(): void {
+        const token: string = RedDotTypeMap[this.redDotKey];
         const system = RedDotSystem.instance;
-        system.removeListener(this.redDotKey, this.onChangeListener);
+        system.removeListener(token, this.onChangeListener);
     }
 
     /**
@@ -69,7 +71,7 @@ export default class RedDotComponent extends cc.Component {
             this.redDot.active = value > 0;
         }
 
-        this.countLabel.node.active = this.showCount;       
+        this.countLabel.node.active = this.showCount;
 
         if (this.countLabel && this.showCount) {
             this.countLabel.string = value > 99 ? '99+' : value.toString();

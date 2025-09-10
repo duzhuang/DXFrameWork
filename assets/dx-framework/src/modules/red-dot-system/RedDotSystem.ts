@@ -148,7 +148,7 @@ export default class RedDotSystem implements IModule {
 
         // 按照层级排序，确保先更新子节点再更新父节点
         const sortedDirtyNodes = Array.from(this.m_dirtyNodes).sort((a, b) => {
-            return b.getKey().split('_').length - a.getKey().split('_').length;
+            return b.getKey().split('.').length - a.getKey().split('.').length;
         });
 
         // 将根节点从脏数据中移除
