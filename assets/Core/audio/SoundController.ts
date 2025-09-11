@@ -68,12 +68,14 @@ export default class SoundController {
      * 播放音效
      * @param effectName 音效名称
      * @param loop 是否循环
+     * @param volume 音量
      */
-    public playEffect(effectClip: cc.AudioClip, loop: boolean = false) {
+    public playEffect(effectClip: cc.AudioClip, loop: boolean = false,volume:number = 1) {
         if (!this.m_isEffectOn) {
             return;
         }
-        cc.audioEngine.playEffect(effectClip, loop);
+        const audioID = cc.audioEngine.playEffect(effectClip, loop);
+        cc.audioEngine.setVolume(audioID,volume);
     }
 
     /**

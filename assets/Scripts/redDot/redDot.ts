@@ -74,7 +74,8 @@ export default class redDot extends cc.Component {
     }
 
     protected start(): void {
-
+        const modules = ModuleManager.instance.getAllModules();
+        console.log("modules", modules);
     }
 
     protected update(dt: number): void {

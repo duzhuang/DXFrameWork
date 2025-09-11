@@ -1,5 +1,6 @@
 {
     "scripts": {
-        "generate:keys": "ts-node scripts/generate-red-dot-keys.js"       
+        "generate:keys": "ts-node scripts/generate-red-dot-keys.js",
+        "docs": "typedoc"
     }
 }

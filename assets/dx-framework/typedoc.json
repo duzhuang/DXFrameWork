@@ -1,0 +1,12 @@
+{
+  "entryPoints": ["src/modules/sound-module/SoundModule.ts"],
+  "out": "docs/sound-module",
+  "plugin": ["typedoc-plugin-markdown"],
+  "exclude": ["**/node_modules/**", "**/dist/**"],
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "hideGenerator": true,
+  "theme": "default",
+  "name": "SoundModule API 文档",
+  "readme": "none"
+}

@@ -20,6 +20,11 @@ export default class ModuleManager {
     private m_isStarted: boolean = false;
 
 
+    /**
+     * 注册模块
+     * @param token 模块名称
+     * @param ctor 模块构造函数
+     */
     public registerModuleByConstructor<T extends { new(...args: any[]): IModule }>(token: string, ctor: T): void {
         if (this.m_modules.has(token)) {
             console.warn("模块已注册", token);
@@ -91,5 +96,13 @@ export default class ModuleManager {
         });
         this.m_modules.clear();
         this.m_isStarted = false;
+    }
+
+    public getModule<T extends IModule>(token: string): T {
+        return this.m_modules.get(token) as T;
+    }
+
+    public getAllModules(): Map<string, IModule> {
+        return this.m_modules;
     }
 }
